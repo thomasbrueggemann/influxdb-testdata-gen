@@ -1,2 +1,3 @@
 # InfluxDB Testdata Generator
-Generates timeseries testdata based on your computers resources
+
+Generates timeseries testdata based ISS telemetry data
