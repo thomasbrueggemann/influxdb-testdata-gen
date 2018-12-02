@@ -4,11 +4,11 @@ const commandLineArgs = require("command-line-args");
 
 // parse CLI options based on the rules below
 const options = commandLineArgs([
-	{ name: "host", alias: "h", type: String, defaultValue: "localhost" },
-	{ name: "port", alias: "P", type: Number },
-	{ name: "username", alias: "u", type: String },
-	{ name: "password", alias: "p", type: String },
-	{ name: "database", alias: "d", type: String }
+	{ name: "host", type: String, defaultValue: "localhost" },
+	{ name: "port", type: Number, defaultValue: 8086 },
+	{ name: "username", type: String },
+	{ name: "password", type: String },
+	{ name: "database", type: String, defaultValue: "test" }
 ]);
 
 // merge the CLI options with the schema definition for influxdb
@@ -44,7 +44,7 @@ setInterval(async () => {
 		const telemetry = (await axios(issTelemetryUrl)).data;
 
 		console.log(
-			`Received IIS telemetry: ${telemetry.longitude}/${telemetry.latitude} at altitude ${
+			`Retrieved IIS telemetry: ${telemetry.longitude}/${telemetry.latitude} at altitude ${
 				telemetry.altitude
 			} km`
 		);
@@ -52,7 +52,7 @@ setInterval(async () => {
 		await influxDb.writePoints([
 			{
 				measurement: "iss",
-				timestamp: telemetry.timestamp,
+				timestamp: new Date(telemetry.timestamp * 1000),
 				tags: { id: telemetry.id, visibility: telemetry.visibility },
 				fields: {
 					latitude: telemetry.latitude,
@@ -67,6 +67,6 @@ setInterval(async () => {
 			}
 		]);
 	} catch (e) {
-		console.log(`Error retrieving ISS telemtry: ${e.message}`);
+		console.log(`Error: ${e.message}`);
 	}
 }, 1050);

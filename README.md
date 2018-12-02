@@ -11,5 +11,5 @@ npm install
 ## Usage
 
 ```
-node start
+node gen --host=localhost --port=8086 --database=test --username=admin --password=XXX
 ```
